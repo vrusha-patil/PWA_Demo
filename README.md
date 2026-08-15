@@ -2,6 +2,12 @@
 
 A full-stack Store Rating System built using React.js, Node.js, Express.js, and MySQL.
 
+## Live Demo
+
+The application is deployed on Render.
+
+- Live Application: https://demo-render-mysql-hosting-frontend.onrender.com
+
 The application supports three roles:
 
 - System Administrator
@@ -12,11 +18,7 @@ Users can register, login, view stores, submit ratings, update ratings, and chan
 
 ---
 
-## Live Demo
 
-The application is deployed on Render.
-
-- Live Application: https://demo-render-mysql-hosting-frontend.onrender.com
 
 ## Features
 
