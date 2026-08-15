@@ -1,12 +1,12 @@
 const express = require("express");
 
-const router =express.Router();
+const router = express.Router();
 
 const authenticateToken = require("../middleware/authMiddleware");
 const authorizeRoles = require("../middleware/roleMiddleware");
 
 const {
-    getDashboardStats ,
+    getDashboardStats,
     createUserByAdmin,
     createStore,
     getAllStores,
@@ -14,30 +14,20 @@ const {
     getUserById
 } = require("../controllers/adminController");
 
-router.get("/dashboard",authenticateToken,
+
+router.get(
+    "/dashboard",
+    authenticateToken,
     authorizeRoles("System Administrator"),
-    getDashboardStats);
+    getDashboardStats
+);
+
 
 router.post(
     "/users",
     authenticateToken,
     authorizeRoles("System Administrator"),
     createUserByAdmin
-);
-
-router.post(
-    "/stores",
-    authenticateToken,
-    authorizeRoles("System Administrator"),
-    createStore
-
-);
-
-router.get(
-    "/stores",
-    authenticateToken,
-    authorizeRoles("System Administrator"),
-    getAllStores
 );
 
 router.get(
@@ -47,10 +37,28 @@ router.get(
     getAllUsers
 );
 
+
 router.get(
     "/users/:id",
     authenticateToken,
     authorizeRoles("System Administrator"),
     getUserById
 );
+
+
+router.post(
+    "/stores",
+    authenticateToken,
+    authorizeRoles("System Administrator"),
+    createStore
+);
+
+router.get(
+    "/stores",
+    authenticateToken,
+    authorizeRoles("System Administrator"),
+    getAllStores
+);
+
+
 module.exports = router;

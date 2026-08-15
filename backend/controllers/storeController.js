@@ -17,21 +17,24 @@ const getAllStores = (req, res) => {
     const conditions = [];
     const values = [];
 
+    // Search by store name
     if (name) {
         conditions.push("name LIKE ?");
         values.push(`%${name}%`);
     }
 
+    // Search by address
     if (address) {
         conditions.push("address LIKE ?");
         values.push(`%${address}%`);
     }
 
-    
+    // Add WHERE conditions
     if (conditions.length > 0) {
         sql += " WHERE " + conditions.join(" AND ");
     }
 
+    // Allowed sorting fields
     const allowedSortFields = [
         "name",
         "email",
@@ -53,7 +56,10 @@ const getAllStores = (req, res) => {
     db.query(sql, values, (err, results) => {
 
         if (err) {
-            console.error("Fetch stores error:", err.message);
+            console.error(
+                "Fetch stores error:",
+                err.message
+            );
 
             return res.status(500).json({
                 message: "Failed to fetch stores"
@@ -67,6 +73,10 @@ const getAllStores = (req, res) => {
 };
 
 
+// ==========================================
+// GET ALL STORES FOR NORMAL USER
+// ==========================================
+
 const getAllStoresForUser = (req, res) => {
 
     const userId = req.user.id;
@@ -74,6 +84,7 @@ const getAllStoresForUser = (req, res) => {
     const {
         name,
         address,
+        search,
         sortBy,
         order
     } = req.query;
@@ -94,6 +105,18 @@ const getAllStoresForUser = (req, res) => {
     const conditions = [];
     const values = [userId];
 
+    // Search using the search box
+    if (search) {
+        conditions.push(
+            "(s.name LIKE ? OR s.address LIKE ?)"
+        );
+
+        const searchValue = `%${search}%`;
+
+        values.push(searchValue);
+        values.push(searchValue);
+    }
+
     // Search by store name
     if (name) {
         conditions.push("s.name LIKE ?");
@@ -111,18 +134,10 @@ const getAllStoresForUser = (req, res) => {
         sql += " WHERE " + conditions.join(" AND ");
     }
 
-    // Allowed sorting fields
-    const allowedSortFields = [
-        "name",
-        "address",
-        "overallRating"
-    ];
-
+    // Allowed sorting
     let selectedSort;
 
-    if (sortBy === "rating") {
-        selectedSort = "s.rating";
-    } else if (sortBy === "overallRating") {
+    if (sortBy === "rating" || sortBy === "overallRating") {
         selectedSort = "s.rating";
     } else if (sortBy === "address") {
         selectedSort = "s.address";
@@ -160,6 +175,10 @@ const getAllStoresForUser = (req, res) => {
     );
 };
 
+
+// ==========================================
+// EXPORT
+// ==========================================
 
 module.exports = {
     getAllStores,
