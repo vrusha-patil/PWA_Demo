@@ -4,15 +4,14 @@ const cors = require("cors");
 
 const app = express();
 
-app.use(
-    cors({
-        origin: [
-            "http://localhost:5173"
-            // Add your Render frontend URL here after deployment
-        ],
-        credentials: true
-    })
-);
+app.use(cors({
+    origin: [
+        "http://localhost:5173",
+        "https://demo-render-mysql-hosting-frontend.onrender.com"
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
 
 app.use(express.json());
 
