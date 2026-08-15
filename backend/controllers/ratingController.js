@@ -1,5 +1,10 @@
 const db = require("../config/database");
 
+
+// ===============================
+// CREATE RATING
+// ===============================
+
 const createRating = (req, res) => {
 
     const { storeId, rating } = req.body || {};
@@ -13,20 +18,31 @@ const createRating = (req, res) => {
         });
     }
 
-    // Rating must be between 1 and 5
-    if (!Number.isInteger(Number(rating)) || Number(rating) < 1 || Number(rating) > 5) {
+    // Rating must be a whole integer between 1 and 5
+    if (
+        !Number.isInteger(Number(rating)) ||
+        Number(rating) < 1 ||
+        Number(rating) > 5
+    ) {
         return res.status(400).json({
-            message: "Rating must be an Whole Integer between 1 and 5"
+            message: "Rating must be a whole integer between 1 and 5"
         });
     }
 
     // Check if store exists
-    const storeSql = "SELECT id FROM stores WHERE id = ?";
+    const storeSql = `
+        SELECT id
+        FROM stores
+        WHERE id = ?
+    `;
 
     db.query(storeSql, [storeId], (err, storeResult) => {
 
         if (err) {
-            console.error("Store check error:", err.message);
+            console.error(
+                "Store check error:",
+                err.message
+            );
 
             return res.status(500).json({
                 message: "Database error"
@@ -43,7 +59,8 @@ const createRating = (req, res) => {
         const existingSql = `
             SELECT id
             FROM ratings
-            WHERE user_id = ? AND store_id = ?
+            WHERE user_id = ?
+            AND store_id = ?
         `;
 
         db.query(
@@ -91,10 +108,41 @@ const createRating = (req, res) => {
                             });
                         }
 
-                        res.status(201).json({
-                            message: "Rating submitted successfully",
-                            ratingId: result.insertId
-                        });
+                        // Recalculate store average rating
+                        const updateStoreRatingSql = `
+                            UPDATE stores
+                            SET rating = (
+                                SELECT AVG(rating)
+                                FROM ratings
+                                WHERE store_id = ?
+                            )
+                            WHERE id = ?
+                        `;
+
+                        db.query(
+                            updateStoreRatingSql,
+                            [storeId, storeId],
+                            (err) => {
+
+                                if (err) {
+                                    console.error(
+                                        "Update store rating error:",
+                                        err.message
+                                    );
+
+                                    return res.status(500).json({
+                                        message:
+                                            "Rating submitted but failed to update store average"
+                                    });
+                                }
+
+                                res.status(201).json({
+                                    message:
+                                        "Rating submitted successfully",
+                                    ratingId: result.insertId
+                                });
+                            }
+                        );
                     }
                 );
             }
@@ -102,27 +150,34 @@ const createRating = (req, res) => {
     });
 };
 
+
+// ===============================
+// UPDATE RATING
+// ===============================
+
 const updateRating = (req, res) => {
 
     const { storeId } = req.params;
+
     const { rating } = req.body || {};
 
     const userId = req.user.id;
 
-    // Validate rating
+    // Rating required
     if (rating === undefined) {
         return res.status(400).json({
             message: "Rating is required"
         });
     }
 
+    // Rating validation
     if (
         !Number.isInteger(Number(rating)) ||
         Number(rating) < 1 ||
         Number(rating) > 5
     ) {
         return res.status(400).json({
-            message: "Rating must be an integer between 1 and 5"
+            message: "Rating must be a whole integer between 1 and 5"
         });
     }
 
@@ -130,7 +185,8 @@ const updateRating = (req, res) => {
     const checkSql = `
         SELECT id
         FROM ratings
-        WHERE user_id = ? AND store_id = ?
+        WHERE user_id = ?
+        AND store_id = ?
     `;
 
     db.query(
@@ -156,11 +212,13 @@ const updateRating = (req, res) => {
                 });
             }
 
-            // Update rating
+            // Update user's rating
             const updateSql = `
                 UPDATE ratings
-                SET rating = ?
-                WHERE user_id = ? AND store_id = ?
+                SET rating = ?,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE user_id = ?
+                AND store_id = ?
             `;
 
             db.query(
@@ -179,14 +237,46 @@ const updateRating = (req, res) => {
                         });
                     }
 
-                    res.status(200).json({
-                        message: "Rating updated successfully"
-                    });
+                    // Recalculate store average rating
+                    const updateStoreRatingSql = `
+                        UPDATE stores
+                        SET rating = (
+                            SELECT AVG(rating)
+                            FROM ratings
+                            WHERE store_id = ?
+                        )
+                        WHERE id = ?
+                    `;
+
+                    db.query(
+                        updateStoreRatingSql,
+                        [storeId, storeId],
+                        (err) => {
+
+                            if (err) {
+                                console.error(
+                                    "Update store rating error:",
+                                    err.message
+                                );
+
+                                return res.status(500).json({
+                                    message:
+                                        "Rating updated but failed to update store average"
+                                });
+                            }
+
+                            res.status(200).json({
+                                message:
+                                    "Rating updated successfully"
+                            });
+                        }
+                    );
                 }
             );
         }
     );
 };
+
 
 module.exports = {
     createRating,

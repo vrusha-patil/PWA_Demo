@@ -70,6 +70,56 @@ const getAllStores = (req, res) => {
 };
 
 
+const getAllStoresForUser = (req, res) => {
+
+    const userId = req.user.id;
+
+    const search = req.query.search || "";
+
+    const sql = `
+        SELECT
+            s.id,
+            s.name,
+            s.address,
+            s.rating AS overallRating,
+            r.rating AS userRating
+        FROM stores s
+        LEFT JOIN ratings r
+            ON s.id = r.store_id
+            AND r.user_id = ?
+        WHERE
+            s.name LIKE ?
+            OR s.address LIKE ?
+        ORDER BY s.name ASC
+    `;
+
+    const searchValue = `%${search}%`;
+
+    db.query(
+        sql,
+        [userId, searchValue, searchValue],
+        (err, results) => {
+
+            if (err) {
+                console.error(
+                    "Fetch stores for user error:",
+                    err.message
+                );
+
+                return res.status(500).json({
+                    message: "Failed to fetch stores"
+                });
+            }
+
+            res.status(200).json({
+                stores: results
+            });
+        }
+    );
+};
+
+
 module.exports = {
-    getAllStores
+    getAllStores,
+    getAllStoresForUser
 };

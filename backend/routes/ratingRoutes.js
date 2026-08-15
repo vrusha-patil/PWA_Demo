@@ -11,13 +11,21 @@ const {
 } = require("../controllers/ratingController");
 
 
+// ===============================
+// SUBMIT RATING
+// ===============================
+
 router.post(
     "/",
     authenticateToken,
     authorizeRoles("Normal User"),
-    createRating,
-   
+    createRating
 );
+
+
+// ===============================
+// MODIFY RATING
+// ===============================
 
 router.put(
     "/:storeId",

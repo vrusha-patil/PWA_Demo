@@ -17,6 +17,8 @@ const authorizeRoles = require("./middleware/roleMiddleware");
 const storeRoutes = require("./routes/storeRoutes");
 const ratingRoutes = require("./routes/ratingRoutes");
 
+const ownerRoutes = require("./routes/ownerRoutes");
+
 app.get("/",(req,res)=>
 {
     res.send("Our Store Rating application API is running....");
@@ -46,6 +48,7 @@ app.get(
     }
 );
 
+app.use("/api/owner", ownerRoutes);
 app.use("/api/stores", storeRoutes);
 app.use("/api/ratings", ratingRoutes);
 

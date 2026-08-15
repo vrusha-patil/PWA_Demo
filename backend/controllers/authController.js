@@ -3,7 +3,7 @@ const db =require("../config/database");
 
 const registerUser =async(req,res)=> {
     try{
-        const {name,email,address,password} =req.body;
+        const {name,email,address,password} =req.body || {};
 
         if(!name || !email || !address || !password )
         {
@@ -179,4 +179,171 @@ return res.status(200).json({
     }
 };
 
-module.exports = {registerUser,loginUser};
+const updatePassword = async (req, res) => {
+
+    try {
+
+        const userId = req.user.id;
+
+        const {
+            currentPassword,
+            newPassword
+        } = req.body || {};
+
+        // Required fields
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({
+                message:
+                    "Current password and new password are required"
+            });
+        }
+
+        // New password length
+        if (
+            newPassword.length < 8 ||
+            newPassword.length > 16
+        ) {
+            return res.status(400).json({
+                message:
+                    "Password must be between 8 - 16 characters"
+            });
+        }
+
+        // Uppercase validation
+        const uppercaseRegex = /[A-Z]/;
+
+        if (!uppercaseRegex.test(newPassword)) {
+            return res.status(400).json({
+                message:
+                    "Password must contain at least one uppercase letter"
+            });
+        }
+
+        // Special character validation
+        const specialCharacterRegex =
+            /[^A-Za-z0-9]/;
+
+        if (!specialCharacterRegex.test(newPassword)) {
+            return res.status(400).json({
+                message:
+                    "Password must contain at least one special character"
+            });
+        }
+
+        // Get current password from database
+        const query = `
+            SELECT password
+            FROM users
+            WHERE id = ?
+        `;
+
+        db.query(
+            query,
+            [userId],
+            async (err, results) => {
+
+                if (err) {
+                    console.error(
+                        "Fetch password error:",
+                        err.message
+                    );
+
+                    return res.status(500).json({
+                        message: "Database error"
+                    });
+                }
+
+                if (results.length === 0) {
+                    return res.status(404).json({
+                        message: "User not found"
+                    });
+                }
+
+                const user = results[0];
+
+                // Verify current password
+                const passwordMatch =
+                    await bcrypt.compare(
+                        currentPassword,
+                        user.password
+                    );
+
+                if (!passwordMatch) {
+                    return res.status(401).json({
+                        message:
+                            "Current password is incorrect"
+                    });
+                }
+
+                // Prevent using the same password
+                const samePassword =
+                    await bcrypt.compare(
+                        newPassword,
+                        user.password
+                    );
+
+                if (samePassword) {
+                    return res.status(400).json({
+                        message:
+                            "New password must be different from current password"
+                    });
+                }
+
+                // Hash new password
+                const hashedPassword =
+                    await bcrypt.hash(
+                        newPassword,
+                        10
+                    );
+
+                // Update password
+                const updateQuery = `
+                    UPDATE users
+                    SET password = ?
+                    WHERE id = ?
+                `;
+
+                db.query(
+                    updateQuery,
+                    [hashedPassword, userId],
+                    (err) => {
+
+                        if (err) {
+                            console.error(
+                                "Update password error:",
+                                err.message
+                            );
+
+                            return res.status(500).json({
+                                message:
+                                    "Failed to update password"
+                            });
+                        }
+
+                        return res.status(200).json({
+                            message:
+                                "Password updated successfully"
+                        });
+                    }
+                );
+            }
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Update password error:",
+            error
+        );
+
+        return res.status(500).json({
+            message: "Server error"
+        });
+    }
+};
+
+
+module.exports = {registerUser,
+    loginUser,
+    updatePassword
+};

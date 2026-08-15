@@ -29,8 +29,8 @@ router.post(
     "/stores",
     authenticateToken,
     authorizeRoles("System Administrator"),
-    createStore,
-    getAllStores
+    createStore
+
 );
 
 router.get(

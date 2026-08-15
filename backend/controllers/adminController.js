@@ -93,11 +93,13 @@ const createUserByAdmin = (req, res) => {
 
     if (
         role !== "Normal User" &&
-        role !== "System Administrator"
+        role !== "System Administrator"&&
+        role !== "Store Owner"
+
     ) {
         return res.status(400).json({
             message:
-                "Role must be either Normal User or System Administrator"
+                "Role must be either Normal User or System Administrator, or Store Owner"
         });
     }
 
@@ -155,26 +157,38 @@ const createUserByAdmin = (req, res) => {
 
 const createStore = (req, res) => {
 
-    const { name, email, address } = req.body;
+    const { ownerId, name, email, address } = req.body || {};
 
-    if (!name || !email || !address) {
+    // Required fields
+    if (!ownerId || !name || !email || !address) {
         return res.status(400).json({
-            message: "Name, email and address are required"
+            message: "Owner ID, name, email and address are required"
         });
     }
+
+    // Owner ID validation
+    if (!Number.isInteger(Number(ownerId))) {
+        return res.status(400).json({
+            message: "Owner ID must be a valid integer"
+        });
+    }
+
+    // Name validation: 20-60 characters
     if (name.length < 20 || name.length > 60) {
         return res.status(400).json({
             message: "Name must be between 20 and 60 characters"
         });
     }
 
+    // Address validation: maximum 400 characters
     if (address.length > 400) {
         return res.status(400).json({
             message: "Address cannot exceed 400 characters"
         });
     }
 
-   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailRegex.test(email)) {
         return res.status(400).json({
@@ -182,56 +196,89 @@ const createStore = (req, res) => {
         });
     }
 
-    const checkEmailSql =
-        "SELECT id FROM stores WHERE email = ?";
+    // Check whether owner exists and has Store Owner role
+    const ownerSql = `
+        SELECT id
+        FROM users
+        WHERE id = ?
+        AND role = 'Store Owner'
+    `;
 
-    db.query(checkEmailSql, [email], (err, result) => {
+    db.query(ownerSql, [Number(ownerId)], (err, ownerResult) => {
 
         if (err) {
-            console.error("Email check error:", err.message);
+            console.error("Owner check error:", err.message);
 
             return res.status(500).json({
                 message: "Database error"
             });
         }
 
-        if (result.length > 0) {
-            return res.status(409).json({
-                message: "Store email already registered"
+        if (ownerResult.length === 0) {
+            return res.status(404).json({
+                message: "Store Owner not found"
             });
         }
 
-        const sql = `
-            INSERT INTO stores
-            (name, email, address, rating)
-            VALUES (?, ?, ?, ?)
-        `;
+        // Check duplicate store email
+        const checkEmailSql =
+            "SELECT id FROM stores WHERE email = ?";
 
-        db.query(
-            sql,
-            [name, email, address, 0.00],
-            (err, result) => {
+        db.query(checkEmailSql, [email], (err, result) => {
 
-                if (err) {
-                    console.error(
-                        "Create store error:",
-                        err.message
-                    );
+            if (err) {
+                console.error("Email check error:", err.message);
 
-                    return res.status(500).json({
-                        message: "Failed to create store"
-                    });
-                }
-
-                res.status(201).json({
-                    message: "Store created successfully",
-                    storeId: result.insertId
+                return res.status(500).json({
+                    message: "Database error"
                 });
             }
-        );
+
+            if (result.length > 0) {
+                return res.status(409).json({
+                    message: "Store email already registered"
+                });
+            }
+
+            // Create store
+            const sql = `
+                INSERT INTO stores
+                (owner_id, name, email, address, rating)
+                VALUES (?, ?, ?, ?, ?)
+            `;
+
+            db.query(
+                sql,
+                [
+                    Number(ownerId),
+                    name,
+                    email,
+                    address,
+                    0.00
+                ],
+                (err, result) => {
+
+                    if (err) {
+                        console.error(
+                            "Create store error:",
+                            err.message
+                        );
+
+                        return res.status(500).json({
+                            message: "Failed to create store"
+                        });
+                    }
+
+                    res.status(201).json({
+                        message: "Store created successfully",
+                        storeId: result.insertId,
+                        ownerId: Number(ownerId)
+                    });
+                }
+            );
+        });
     });
 };
-
 const getAllStores = (req, res) => {
 
     const { name, email, address, sortBy, order } = req.query;
@@ -239,6 +286,7 @@ const getAllStores = (req, res) => {
     let sql = `
         SELECT
             id,
+            owner_id,
             name,
             email,
             address,

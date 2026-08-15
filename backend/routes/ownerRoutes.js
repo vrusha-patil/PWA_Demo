@@ -5,20 +5,17 @@ const router = express.Router();
 const authenticateToken = require("../middleware/authMiddleware");
 const authorizeRoles = require("../middleware/roleMiddleware");
 
-
-
 const {
-    getAllStoresForUser
-} = require("../controllers/storeController");
+    getOwnerDashboard
+} = require("../controllers/ownerController");
 
 
 router.get(
-    "/",
+    "/dashboard",
     authenticateToken,
-    authorizeRoles("Normal User"),
-    getAllStoresForUser
+    authorizeRoles("Store Owner"),
+    getOwnerDashboard
 );
-
 
 
 module.exports = router;
