@@ -14,15 +14,15 @@ const adminRoutes = require("./routes/adminRoutes");
 const authenticateToken = require("./middleware/authMiddleware");
 const authorizeRoles = require("./middleware/roleMiddleware");
 
-
-
-app.use("/api/auth",authRoutes);
-app.use("/api/admin", adminRoutes);
+const storeRoutes = require("./routes/storeRoutes");
+const ratingRoutes = require("./routes/ratingRoutes");
 
 app.get("/",(req,res)=>
 {
     res.send("Our Store Rating application API is running....");
 });
+
+app.use("/api/auth",authRoutes);
 
 app.get("/api/protected", authenticateToken, (req, res) => {
     res.json({
@@ -30,6 +30,9 @@ app.get("/api/protected", authenticateToken, (req, res) => {
         user: req.user
     });
 });
+
+
+app.use("/api/admin", adminRoutes);
 
 app.get(
     "/api/admin-test",
@@ -43,6 +46,8 @@ app.get(
     }
 );
 
+app.use("/api/stores", storeRoutes);
+app.use("/api/ratings", ratingRoutes);
 
 const PORT = process.env.PORT || 5000;
 

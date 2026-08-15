@@ -1,4 +1,6 @@
 const db = require("../config/database");
+const bcrypt = require("bcryptjs");
+
 
 const getDashboardStats = (req,res)=>
 {
@@ -50,30 +52,27 @@ db.query(queries.users, (err, userResult) => {
 
 const createUserByAdmin = (req, res) => {
 
-    const { name, email, password, address, role } = req.body;
+    const { name, email, password, address, role } = req.body || {};
 
-    // Required field validation
+   
     if (!name || !email || !password || !address || !role) {
         return res.status(400).json({
             message: "All fields are required"
         });
     }
 
-    // Name validation: 20-60 characters
     if (name.length < 20 || name.length > 60) {
         return res.status(400).json({
             message: "Name must be between 20 and 60 characters"
         });
     }
 
-    // Address validation: maximum 400 characters
     if (address.length > 400) {
         return res.status(400).json({
             message: "Address cannot exceed 400 characters"
         });
     }
 
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailRegex.test(email)) {
@@ -82,10 +81,6 @@ const createUserByAdmin = (req, res) => {
         });
     }
 
-    // Password validation
-    // 8-16 characters
-    // At least one uppercase letter
-    // At least one special character
     const passwordRegex =
         /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,16}$/;
 
@@ -96,7 +91,6 @@ const createUserByAdmin = (req, res) => {
         });
     }
 
-    // Admin is allowed to create Normal Users and Admin Users
     if (
         role !== "Normal User" &&
         role !== "System Administrator"
@@ -107,7 +101,6 @@ const createUserByAdmin = (req, res) => {
         });
     }
 
-    // Check if email already exists
     const checkEmailSql =
         "SELECT id FROM users WHERE email = ?";
 
@@ -127,7 +120,6 @@ const createUserByAdmin = (req, res) => {
             });
         }
 
-        // Hash password
         const hashedPassword = bcrypt.hashSync(password, 10);
 
         const sql = `
@@ -161,8 +153,298 @@ const createUserByAdmin = (req, res) => {
     });
 };
 
+const createStore = (req, res) => {
+
+    const { name, email, address } = req.body;
+
+    if (!name || !email || !address) {
+        return res.status(400).json({
+            message: "Name, email and address are required"
+        });
+    }
+    if (name.length < 20 || name.length > 60) {
+        return res.status(400).json({
+            message: "Name must be between 20 and 60 characters"
+        });
+    }
+
+    if (address.length > 400) {
+        return res.status(400).json({
+            message: "Address cannot exceed 400 characters"
+        });
+    }
+
+   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({
+            message: "Please enter a valid email address"
+        });
+    }
+
+    const checkEmailSql =
+        "SELECT id FROM stores WHERE email = ?";
+
+    db.query(checkEmailSql, [email], (err, result) => {
+
+        if (err) {
+            console.error("Email check error:", err.message);
+
+            return res.status(500).json({
+                message: "Database error"
+            });
+        }
+
+        if (result.length > 0) {
+            return res.status(409).json({
+                message: "Store email already registered"
+            });
+        }
+
+        const sql = `
+            INSERT INTO stores
+            (name, email, address, rating)
+            VALUES (?, ?, ?, ?)
+        `;
+
+        db.query(
+            sql,
+            [name, email, address, 0.00],
+            (err, result) => {
+
+                if (err) {
+                    console.error(
+                        "Create store error:",
+                        err.message
+                    );
+
+                    return res.status(500).json({
+                        message: "Failed to create store"
+                    });
+                }
+
+                res.status(201).json({
+                    message: "Store created successfully",
+                    storeId: result.insertId
+                });
+            }
+        );
+    });
+};
+
+const getAllStores = (req, res) => {
+
+    const { name, email, address, sortBy, order } = req.query;
+
+    let sql = `
+        SELECT
+            id,
+            name,
+            email,
+            address,
+            rating
+        FROM stores
+    `;
+
+    const conditions = [];
+    const values = [];
+
+    // Name filter
+    if (name) {
+        conditions.push("name LIKE ?");
+        values.push(`%${name}%`);
+    }
+
+    // Email filter
+    if (email) {
+        conditions.push("email LIKE ?");
+        values.push(`%${email}%`);
+    }
+
+    // Address filter
+    if (address) {
+        conditions.push("address LIKE ?");
+        values.push(`%${address}%`);
+    }
+
+    // WHERE
+    if (conditions.length > 0) {
+        sql += " WHERE " + conditions.join(" AND ");
+    }
+
+    // Allowed sorting columns
+    const allowedSortFields = [
+        "id",
+        "name",
+        "email",
+        "address",
+        "rating"
+    ];
+
+    const selectedSort = allowedSortFields.includes(sortBy)
+        ? sortBy
+        : "id";
+
+    const selectedOrder =
+        order && order.toLowerCase() === "asc"
+            ? "ASC"
+            : "DESC";
+
+    sql += ` ORDER BY ${selectedSort} ${selectedOrder}`;
+
+    db.query(sql, values, (err, results) => {
+
+        if (err) {
+            console.error("Fetch stores error:", err.message);
+
+            return res.status(500).json({
+                message: "Failed to fetch stores"
+            });
+        }
+
+        res.status(200).json({
+            stores: results
+        });
+    });
+};
+
+const getAllUsers = (req, res) => {
+
+    const { name, email, address, role, sortBy, order } = req.query;
+
+    let sql = `
+        SELECT
+            id,
+            name,
+            email,
+            address,
+            role
+        FROM users
+    `;
+
+    const conditions = [];
+    const values = [];
+
+    // Name filter
+    if (name) {
+        conditions.push("name LIKE ?");
+        values.push(`%${name}%`);
+    }
+
+    // Email filter
+    if (email) {
+        conditions.push("email LIKE ?");
+        values.push(`%${email}%`);
+    }
+
+    // Address filter
+    if (address) {
+        conditions.push("address LIKE ?");
+        values.push(`%${address}%`);
+    }
+
+    // Role filter
+    if (role) {
+
+        const allowedRoles = [
+            "Normal User",
+            "System Administrator",
+            "Store Owner"
+        ];
+
+        if (!allowedRoles.includes(role)) {
+            return res.status(400).json({
+                message: "Invalid role"
+            });
+        }
+
+        conditions.push("role = ?");
+        values.push(role);
+    }
+
+    // Add WHERE conditions
+    if (conditions.length > 0) {
+        sql += " WHERE " + conditions.join(" AND ");
+    }
+
+    // Sorting
+    const allowedSortFields = [
+        "id",
+        "name",
+        "email",
+        "address",
+        "role"
+    ];
+
+    const selectedSort = allowedSortFields.includes(sortBy)
+        ? sortBy
+        : "id";
+
+    const selectedOrder =
+        order && order.toLowerCase() === "asc"
+            ? "ASC"
+            : "DESC";
+
+    sql += ` ORDER BY ${selectedSort} ${selectedOrder}`;
+
+    db.query(sql, values, (err, results) => {
+
+        if (err) {
+            console.error("Fetch users error:", err.message);
+
+            return res.status(500).json({
+                message: "Failed to fetch users"
+            });
+        }
+
+        res.status(200).json({
+            users: results
+        });
+    });
+};
+
+const getUserById = (req, res) => {
+
+    const { id } = req.params;
+
+    const sql = `
+        SELECT
+            id,
+            name,
+            email,
+            address,
+            role
+        FROM users
+        WHERE id = ?
+    `;
+
+    db.query(sql, [id], (err, results) => {
+
+        if (err) {
+            console.error("Fetch user error:", err.message);
+
+            return res.status(500).json({
+                message: "Failed to fetch user"
+            });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        res.status(200).json({
+            user: results[0]
+        });
+    });
+};
 
 module.exports = {
     getDashboardStats,
-    createUserByAdmin
+    createUserByAdmin,
+    createStore,
+    getAllStores,
+    getAllUsers,
+    getUserById
 };
