@@ -1,5 +1,11 @@
 # Store Rating System
 
+## Live Demo
+
+The application is deployed on Render.
+
+- Live Application: https://demo-render-mysql-hosting-frontend.onrender.com
+
 A full-stack Store Rating System built using React.js, Node.js, Express.js, and MySQL.
 
 The application supports three roles:
@@ -66,13 +72,14 @@ Users can register, login, view stores, submit ratings, update ratings, and chan
 - CORS
 - dotenv
 
+
 ### Database
-- MySQL  ( XAMPP phpMyAdmin )
+- MySQL
+- Local development: XAMPP / phpMyAdmin
+- Deployment : MySQL hosted on Aiven (cloud)
 
 ### API Testing
 - Postman
-
-
 
 ## Demo Credentials
 
@@ -125,3 +132,4 @@ Store-Rating-System/
 │   └── package.json
 │
 └── README.md
+
