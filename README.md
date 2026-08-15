@@ -4,7 +4,7 @@ A full-stack Store Rating System built using React.js, Node.js, Express.js, and 
 
 The application supports three roles:
 
-- Admin
+- System Administrator
 - Normal User
 - Store Owner
 
@@ -23,7 +23,7 @@ Users can register, login, view stores, submit ratings, update ratings, and chan
 - Change password
 - Logout
 
-### Admin
+### System Administrator
 - Admin dashboard
 - View users and stores
 - Add users and stores
@@ -49,18 +49,6 @@ Users can register, login, view stores, submit ratings, update ratings, and chan
 
 ---
 
-## Validation
-
-- Name: 20-60 characters
-- Address: maximum 400 characters
-- Password: 8-16 characters
-- Password requires at least one uppercase letter
-- Password requires at least one special character
-- Email validation
-- Store rating: 1-5
-
----
-
 ## Technologies Used
 
 ### Frontend
@@ -79,14 +67,36 @@ Users can register, login, view stores, submit ratings, update ratings, and chan
 - dotenv
 
 ### Database
-- MySQL
-- XAMPP
-- phpMyAdmin
+- MySQL  ( XAMPP phpMyAdmin )
 
 ### API Testing
 - Postman
 
----
+
+
+## Demo Credentials
+
+These accounts are provided for testing/demo purposes.
+
+### Admin
+
+- Email: admin1@gmail.com
+- Password: Admin@321
+- Role: ADMIN
+
+### Store Owner
+
+- Email: pranayapatil33@gmail.com
+- Password: Pranay@2206
+- Role: OWNER
+
+### Normal User
+
+- Email: jay123@gmail.com
+- Password: Jayraj@123
+- Role: NORMAL USER
+
+You can also create a new account using the Register option.
 
 ## Project Structure
 
