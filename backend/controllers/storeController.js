@@ -17,24 +17,21 @@ const getAllStores = (req, res) => {
     const conditions = [];
     const values = [];
 
-    // Search by store name
     if (name) {
         conditions.push("name LIKE ?");
         values.push(`%${name}%`);
     }
 
-    // Search by address
     if (address) {
         conditions.push("address LIKE ?");
         values.push(`%${address}%`);
     }
 
-    // Add WHERE conditions
+    
     if (conditions.length > 0) {
         sql += " WHERE " + conditions.join(" AND ");
     }
 
-    // Allowed sorting fields
     const allowedSortFields = [
         "name",
         "email",
@@ -74,9 +71,14 @@ const getAllStoresForUser = (req, res) => {
 
     const userId = req.user.id;
 
-    const search = req.query.search || "";
+    const {
+        name,
+        address,
+        sortBy,
+        order
+    } = req.query;
 
-    const sql = `
+    let sql = `
         SELECT
             s.id,
             s.name,
@@ -87,17 +89,57 @@ const getAllStoresForUser = (req, res) => {
         LEFT JOIN ratings r
             ON s.id = r.store_id
             AND r.user_id = ?
-        WHERE
-            s.name LIKE ?
-            OR s.address LIKE ?
-        ORDER BY s.name ASC
     `;
 
-    const searchValue = `%${search}%`;
+    const conditions = [];
+    const values = [userId];
+
+    // Search by store name
+    if (name) {
+        conditions.push("s.name LIKE ?");
+        values.push(`%${name}%`);
+    }
+
+    // Search by address
+    if (address) {
+        conditions.push("s.address LIKE ?");
+        values.push(`%${address}%`);
+    }
+
+    // WHERE conditions
+    if (conditions.length > 0) {
+        sql += " WHERE " + conditions.join(" AND ");
+    }
+
+    // Allowed sorting fields
+    const allowedSortFields = [
+        "name",
+        "address",
+        "overallRating"
+    ];
+
+    let selectedSort;
+
+    if (sortBy === "rating") {
+        selectedSort = "s.rating";
+    } else if (sortBy === "overallRating") {
+        selectedSort = "s.rating";
+    } else if (sortBy === "address") {
+        selectedSort = "s.address";
+    } else {
+        selectedSort = "s.name";
+    }
+
+    const selectedOrder =
+        order && order.toLowerCase() === "desc"
+            ? "DESC"
+            : "ASC";
+
+    sql += ` ORDER BY ${selectedSort} ${selectedOrder}`;
 
     db.query(
         sql,
-        [userId, searchValue, searchValue],
+        values,
         (err, results) => {
 
             if (err) {

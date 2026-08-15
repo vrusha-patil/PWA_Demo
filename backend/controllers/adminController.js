@@ -457,13 +457,18 @@ const getUserById = (req, res) => {
 
     const sql = `
         SELECT
-            id,
-            name,
-            email,
-            address,
-            role
-        FROM users
-        WHERE id = ?
+            u.id,
+            u.name,
+            u.email,
+            u.address,
+            u.role,
+            s.id AS storeId,
+            s.name AS storeName,
+            s.rating AS storeRating
+        FROM users u
+        LEFT JOIN stores s
+            ON u.id = s.owner_id
+        WHERE u.id = ?
     `;
 
     db.query(sql, [id], (err, results) => {
@@ -482,12 +487,30 @@ const getUserById = (req, res) => {
             });
         }
 
+        const user = results[0];
+
+        const responseUser = {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            address: user.address,
+            role: user.role
+        };
+
+        // Show store information only for Store Owner
+        if (user.role === "Store Owner") {
+            responseUser.store = {
+                storeId: user.storeId,
+                storeName: user.storeName,
+                rating: user.storeRating
+            };
+        }
+
         res.status(200).json({
-            user: results[0]
+            user: responseUser
         });
     });
 };
-
 module.exports = {
     getDashboardStats,
     createUserByAdmin,
