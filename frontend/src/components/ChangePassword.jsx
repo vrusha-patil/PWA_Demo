@@ -171,18 +171,7 @@ const ChangePassword = ({ onClose }) => {
         try {
             setLoading(true);
 
-            /*
-             * IMPORTANT:
-             *
-             * Backend route:
-             * PUT /api/auth/password
-             *
-             * Axios baseURL:
-             * http://localhost:5000/api
-             *
-             * Therefore frontend URL:
-             * /auth/password
-             */
+            
             const response = await api.put(
                 "/auth/password",
                 {
