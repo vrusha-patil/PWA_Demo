@@ -19,7 +19,6 @@ Users can register, login, view stores, submit ratings, update ratings, and chan
 ---
 
 
-
 ## Features
 
 ### Authentication
@@ -95,8 +94,8 @@ These accounts are provided for testing/demo purposes.
 
 ### Store Owner
 
-- Email: pranayapatil33@gmail.com
-- Password: Pranay@2206
+- Email: kusum2312@gmail.com
+- Password: Kusum@2312
 - Role: OWNER
 
 ### Normal User
