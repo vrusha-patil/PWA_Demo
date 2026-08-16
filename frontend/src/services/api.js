@@ -1,11 +1,19 @@
 import axios from "axios";
 
+const isLocalhost =
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1";
+
 const api = axios.create({
-    baseURL: "https://demo-render-mysql-hosting-backend.onrender.com/api",
+    baseURL: isLocalhost
+        ? "http://localhost:5000/api"
+        : "https://demo-render-mysql-hosting-backend.onrender.com/api",
+
     headers: {
         "Content-Type": "application/json",
     },
 });
+
 
 api.interceptors.request.use(
     (config) => {
