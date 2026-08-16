@@ -3,7 +3,6 @@ import api from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 
 const AdminDashboard = () => {
-
     const { user, logout } = useAuth();
 
     const [stats, setStats] = useState({
@@ -24,11 +23,9 @@ const AdminDashboard = () => {
     const [userSortBy, setUserSortBy] = useState("id");
     const [userOrder, setUserOrder] = useState("desc");
 
-
     const [storeSearch, setStoreSearch] = useState("");
     const [storeSortBy, setStoreSortBy] = useState("id");
     const [storeOrder, setStoreOrder] = useState("desc");
-
 
     const [showUserModal, setShowUserModal] = useState(false);
     const [showStoreModal, setShowStoreModal] = useState(false);
@@ -37,6 +34,7 @@ const AdminDashboard = () => {
     const [selectedUser, setSelectedUser] = useState(null);
 
     const [submitting, setSubmitting] = useState(false);
+
     const [userForm, setUserForm] = useState({
         name: "",
         email: "",
@@ -44,6 +42,7 @@ const AdminDashboard = () => {
         address: "",
         role: "Normal User",
     });
+
     const [storeForm, setStoreForm] = useState({
         ownerId: "",
         name: "",
@@ -56,9 +55,7 @@ const AdminDashboard = () => {
     }, []);
 
     const loadDashboard = async () => {
-
         try {
-
             setLoading(true);
             setError("");
 
@@ -67,46 +64,25 @@ const AdminDashboard = () => {
                 fetchUsers(),
                 fetchStores(),
             ]);
-
         } catch (err) {
-
-            console.error(
-                "Dashboard loading error:",
-                err
-            );
+            console.error("Dashboard loading error:", err);
 
             setError(
                 err.response?.data?.message ||
                 "Failed to load admin dashboard"
             );
-
         } finally {
-
             setLoading(false);
-
         }
     };
 
     const fetchStats = async () => {
-
-        const response =
-            await api.get("/admin/dashboard");
+        const response = await api.get("/admin/dashboard");
 
         setStats({
-            totalUsers:
-                Number(
-                    response.data.totalUsers || 0
-                ),
-
-            totalStores:
-                Number(
-                    response.data.totalStores || 0
-                ),
-
-            totalRatings:
-                Number(
-                    response.data.totalRatings || 0
-                ),
+            totalUsers: Number(response.data.totalUsers || 0),
+            totalStores: Number(response.data.totalStores || 0),
+            totalRatings: Number(response.data.totalRatings || 0),
         });
     };
 
@@ -116,31 +92,16 @@ const AdminDashboard = () => {
         sortValue = userSortBy,
         orderValue = userOrder
     ) => {
+        const response = await api.get("/admin/users", {
+            params: {
+                search: searchValue?.trim() || undefined,
+                role: roleValue || undefined,
+                sortBy: sortValue,
+                order: orderValue,
+            },
+        });
 
-        const response = await api.get(
-            "/admin/users",
-            {
-                params: {
-                    search:
-                        searchValue?.trim() ||
-                        undefined,
-
-                    role:
-                        roleValue ||
-                        undefined,
-
-                    sortBy:
-                        sortValue,
-
-                    order:
-                        orderValue,
-                },
-            }
-        );
-
-        setUsers(
-            response.data.users || []
-        );
+        setUsers(response.data.users || []);
     };
 
     const fetchStores = async (
@@ -148,45 +109,26 @@ const AdminDashboard = () => {
         sortValue = storeSortBy,
         orderValue = storeOrder
     ) => {
+        const response = await api.get("/admin/stores", {
+            params: {
+                search: searchValue?.trim() || undefined,
+                sortBy: sortValue,
+                order: orderValue,
+            },
+        });
 
-        const response = await api.get(
-            "/admin/stores",
-            {
-                params: {
-                    search:
-                        searchValue?.trim() ||
-                        undefined,
-
-                    sortBy:
-                        sortValue,
-
-                    order:
-                        orderValue,
-                },
-            }
-        );
-
-        setStores(
-            response.data.stores || []
-        );
+        setStores(response.data.stores || []);
     };
-    const handleUserSearch = async (e) => {
 
+    const handleUserSearch = async (e) => {
         e.preventDefault();
 
         try {
-
             setError("");
             setSuccess("");
-
             await fetchUsers();
-
         } catch (err) {
-
-            console.error(
-                "User search error:",
-                err
-            );
+            console.error("User search error:", err);
 
             setError(
                 err.response?.data?.message ||
@@ -196,13 +138,10 @@ const AdminDashboard = () => {
     };
 
     const handleUserRoleChange = async (e) => {
-
         const value = e.target.value;
-
         setUserRole(value);
 
         try {
-
             setError("");
 
             await fetchUsers(
@@ -211,13 +150,8 @@ const AdminDashboard = () => {
                 userSortBy,
                 userOrder
             );
-
         } catch (err) {
-
-            console.error(
-                "User role filter error:",
-                err
-            );
+            console.error("User role filter error:", err);
 
             setError(
                 err.response?.data?.message ||
@@ -227,13 +161,10 @@ const AdminDashboard = () => {
     };
 
     const handleUserSortChange = async (e) => {
-
         const value = e.target.value;
-
         setUserSortBy(value);
 
         try {
-
             setError("");
 
             await fetchUsers(
@@ -242,13 +173,8 @@ const AdminDashboard = () => {
                 value,
                 userOrder
             );
-
         } catch (err) {
-
-            console.error(
-                "User sorting error:",
-                err
-            );
+            console.error("User sorting error:", err);
 
             setError(
                 err.response?.data?.message ||
@@ -256,14 +182,12 @@ const AdminDashboard = () => {
             );
         }
     };
+
     const handleUserOrderChange = async (e) => {
-
         const value = e.target.value;
-
         setUserOrder(value);
 
         try {
-
             setError("");
 
             await fetchUsers(
@@ -272,13 +196,8 @@ const AdminDashboard = () => {
                 userSortBy,
                 value
             );
-
         } catch (err) {
-
-            console.error(
-                "User order error:",
-                err
-            );
+            console.error("User order error:", err);
 
             setError(
                 err.response?.data?.message ||
@@ -286,23 +205,16 @@ const AdminDashboard = () => {
             );
         }
     };
-    const handleStoreSearch = async (e) => {
 
+    const handleStoreSearch = async (e) => {
         e.preventDefault();
 
         try {
-
             setError("");
             setSuccess("");
-
             await fetchStores();
-
         } catch (err) {
-
-            console.error(
-                "Store search error:",
-                err
-            );
+            console.error("Store search error:", err);
 
             setError(
                 err.response?.data?.message ||
@@ -312,13 +224,10 @@ const AdminDashboard = () => {
     };
 
     const handleStoreSortChange = async (e) => {
-
         const value = e.target.value;
-
         setStoreSortBy(value);
 
         try {
-
             setError("");
 
             await fetchStores(
@@ -326,13 +235,8 @@ const AdminDashboard = () => {
                 value,
                 storeOrder
             );
-
         } catch (err) {
-
-            console.error(
-                "Store sorting error:",
-                err
-            );
+            console.error("Store sorting error:", err);
 
             setError(
                 err.response?.data?.message ||
@@ -342,13 +246,10 @@ const AdminDashboard = () => {
     };
 
     const handleStoreOrderChange = async (e) => {
-
         const value = e.target.value;
-
         setStoreOrder(value);
 
         try {
-
             setError("");
 
             await fetchStores(
@@ -356,13 +257,8 @@ const AdminDashboard = () => {
                 storeSortBy,
                 value
             );
-
         } catch (err) {
-
-            console.error(
-                "Store order error:",
-                err
-            );
+            console.error("Store order error:", err);
 
             setError(
                 err.response?.data?.message ||
@@ -371,27 +267,21 @@ const AdminDashboard = () => {
         }
     };
 
-
     const handleUserChange = (e) => {
-
         setUserForm({
             ...userForm,
-            [e.target.name]:
-                e.target.value,
+            [e.target.name]: e.target.value,
         });
     };
 
     const handleStoreChange = (e) => {
-
         setStoreForm({
             ...storeForm,
-            [e.target.name]:
-                e.target.value,
+            [e.target.name]: e.target.value,
         });
     };
 
     const openUserModal = () => {
-
         setError("");
 
         setUserForm({
@@ -405,13 +295,7 @@ const AdminDashboard = () => {
         setShowUserModal(true);
     };
 
-
-    // =====================================================
-    // OPEN STORE MODAL
-    // =====================================================
-
     const openStoreModal = () => {
-
         setError("");
 
         setStoreForm({
@@ -425,24 +309,16 @@ const AdminDashboard = () => {
     };
 
     const handleCreateUser = async (e) => {
-
         e.preventDefault();
 
         try {
-
             setSubmitting(true);
             setError("");
             setSuccess("");
 
-            await api.post(
-                "/admin/users",
-                userForm
-            );
+            await api.post("/admin/users", userForm);
 
-            setSuccess(
-                "User created successfully."
-            );
-
+            setSuccess("User created successfully.");
             setShowUserModal(false);
 
             setUserForm({
@@ -457,59 +333,34 @@ const AdminDashboard = () => {
                 fetchUsers(),
                 fetchStats(),
             ]);
-
         } catch (err) {
-
-            console.error(
-                "Create user error:",
-                err
-            );
+            console.error("Create user error:", err);
 
             setError(
                 err.response?.data?.message ||
                 "Failed to create user"
             );
-
         } finally {
-
             setSubmitting(false);
-
         }
     };
 
     const handleCreateStore = async (e) => {
-
         e.preventDefault();
 
         try {
-
             setSubmitting(true);
             setError("");
             setSuccess("");
 
-            await api.post(
-                "/admin/stores",
-                {
-                    ownerId:
-                        Number(
-                            storeForm.ownerId
-                        ),
+            await api.post("/admin/stores", {
+                ownerId: Number(storeForm.ownerId),
+                name: storeForm.name,
+                email: storeForm.email,
+                address: storeForm.address,
+            });
 
-                    name:
-                        storeForm.name,
-
-                    email:
-                        storeForm.email,
-
-                    address:
-                        storeForm.address,
-                }
-            );
-
-            setSuccess(
-                "Store created successfully."
-            );
-
+            setSuccess("Store created successfully.");
             setShowStoreModal(false);
 
             setStoreForm({
@@ -523,45 +374,29 @@ const AdminDashboard = () => {
                 fetchStores(),
                 fetchStats(),
             ]);
-
         } catch (err) {
-
-            console.error(
-                "Create store error:",
-                err
-            );
+            console.error("Create store error:", err);
 
             setError(
                 err.response?.data?.message ||
                 "Failed to create store"
             );
-
         } finally {
-
             setSubmitting(false);
-
         }
     };
 
     const handleViewUser = async (userId) => {
-
         try {
-
             setError("");
 
-            const response =
-                await api.get(
-                    `/admin/users/${userId}`
-                );
-
-            setSelectedUser(
-                response.data.user
+            const response = await api.get(
+                `/admin/users/${userId}`
             );
 
+            setSelectedUser(response.data.user);
             setShowUserDetails(true);
-
         } catch (err) {
-
             console.error(
                 "Fetch user details error:",
                 err
@@ -574,13 +409,29 @@ const AdminDashboard = () => {
         }
     };
 
-    if (loading) {
+    /*
+     * Decide which ID label should be displayed.
+     *
+     * Store Owner           -> Owner ID
+     * System Administrator  -> Admin ID
+     * Normal User           -> User ID
+     */
+    const getUserIdLabel = (role) => {
+        if (role === "Store Owner") {
+            return "Owner ID";
+        }
 
+        if (role === "System Administrator") {
+            return "Admin ID";
+        }
+
+        return "User ID";
+    };
+
+    if (loading) {
         return (
             <div style={styles.centerPage}>
-
                 <div style={styles.loadingBox}>
-
                     <h2 style={styles.loadingTitle}>
                         Loading dashboard...
                     </h2>
@@ -588,23 +439,15 @@ const AdminDashboard = () => {
                     <p style={styles.mutedText}>
                         Please wait.
                     </p>
-
                 </div>
-
             </div>
         );
     }
 
     return (
-
         <div style={styles.page}>
-
-            {/* HEADER */}
-
             <header style={styles.header}>
-
                 <div>
-
                     <h1 style={styles.title}>
                         Store Rating System
                     </h1>
@@ -612,7 +455,6 @@ const AdminDashboard = () => {
                     <p style={styles.welcome}>
                         Welcome, {user?.name}
                     </p>
-
                 </div>
 
                 <button
@@ -621,16 +463,10 @@ const AdminDashboard = () => {
                 >
                     Logout
                 </button>
-
             </header>
 
-
             <main style={styles.container}>
-
-                {/* PAGE TITLE */}
-
                 <section style={styles.introSection}>
-
                     <h2 style={styles.pageHeading}>
                         Admin Dashboard
                     </h2>
@@ -639,11 +475,7 @@ const AdminDashboard = () => {
                         Manage users, stores and view
                         system information.
                     </p>
-
                 </section>
-
-
-                {/* MESSAGES */}
 
                 {error && (
                     <div style={styles.errorMessage}>
@@ -657,13 +489,8 @@ const AdminDashboard = () => {
                     </div>
                 )}
 
-
-                {/* STATISTICS */}
-
                 <section style={styles.statsContainer}>
-
                     <div style={styles.statCard}>
-
                         <p style={styles.statLabel}>
                             Total Users
                         </p>
@@ -671,12 +498,9 @@ const AdminDashboard = () => {
                         <p style={styles.statValue}>
                             {stats.totalUsers}
                         </p>
-
                     </div>
 
-
                     <div style={styles.statCard}>
-
                         <p style={styles.statLabel}>
                             Total Stores
                         </p>
@@ -684,12 +508,9 @@ const AdminDashboard = () => {
                         <p style={styles.statValue}>
                             {stats.totalStores}
                         </p>
-
                     </div>
 
-
                     <div style={styles.statCard}>
-
                         <p style={styles.statLabel}>
                             Total Ratings
                         </p>
@@ -697,17 +518,12 @@ const AdminDashboard = () => {
                         <p style={styles.statValue}>
                             {stats.totalRatings}
                         </p>
-
                     </div>
-
                 </section>
 
                 <section style={styles.sectionCard}>
-
                     <div style={styles.sectionHeader}>
-
                         <div>
-
                             <h2 style={styles.sectionTitle}>
                                 Users
                             </h2>
@@ -715,7 +531,6 @@ const AdminDashboard = () => {
                             <p style={styles.sectionDescription}>
                                 Search, filter and sort registered users.
                             </p>
-
                         </div>
 
                         <button
@@ -724,37 +539,27 @@ const AdminDashboard = () => {
                         >
                             Add User
                         </button>
-
                     </div>
-
-
-                    {/* USER SEARCH */}
 
                     <form
                         onSubmit={handleUserSearch}
                         style={styles.searchArea}
                     >
-
                         <input
                             type="text"
                             placeholder="Search by name, email or address"
                             value={userSearch}
                             onChange={(e) =>
-                                setUserSearch(
-                                    e.target.value
-                                )
+                                setUserSearch(e.target.value)
                             }
                             style={styles.searchInput}
                         />
 
                         <select
                             value={userRole}
-                            onChange={
-                                handleUserRoleChange
-                            }
+                            onChange={handleUserRoleChange}
                             style={styles.select}
                         >
-
                             <option value="">
                                 All Roles
                             </option>
@@ -770,7 +575,6 @@ const AdminDashboard = () => {
                             <option value="System Administrator">
                                 System Administrator
                             </option>
-
                         </select>
 
                         <button
@@ -779,57 +583,30 @@ const AdminDashboard = () => {
                         >
                             Search
                         </button>
-
                     </form>
 
-
-                    {/* USER SORT */}
-
                     <div style={styles.sortArea}>
-
                         <span style={styles.sortLabel}>
                             Sort Users:
                         </span>
 
                         <select
                             value={userSortBy}
-                            onChange={
-                                handleUserSortChange
-                            }
+                            onChange={handleUserSortChange}
                             style={styles.select}
                         >
-
-                            <option value="id">
-                                ID
-                            </option>
-
-                            <option value="name">
-                                Name
-                            </option>
-
-                            <option value="email">
-                                Email
-                            </option>
-
-                            <option value="address">
-                                Address
-                            </option>
-
-                            <option value="role">
-                                Role
-                            </option>
-
+                            <option value="id">ID</option>
+                            <option value="name">Name</option>
+                            <option value="email">Email</option>
+                            <option value="address">Address</option>
+                            <option value="role">Role</option>
                         </select>
-
 
                         <select
                             value={userOrder}
-                            onChange={
-                                handleUserOrderChange
-                            }
+                            onChange={handleUserOrderChange}
                             style={styles.select}
                         >
-
                             <option value="asc">
                                 Ascending
                             </option>
@@ -837,30 +614,18 @@ const AdminDashboard = () => {
                             <option value="desc">
                                 Descending
                             </option>
-
                         </select>
-
                     </div>
 
-
-                    {/* USER TABLE */}
-
                     {users.length === 0 ? (
-
                         <div style={styles.emptyState}>
                             No users found.
                         </div>
-
                     ) : (
-
                         <div style={styles.tableWrapper}>
-
                             <table style={styles.table}>
-
                                 <thead>
-
                                     <tr>
-
                                         <th style={styles.th}>
                                             Name
                                         </th>
@@ -880,17 +645,12 @@ const AdminDashboard = () => {
                                         <th style={styles.th}>
                                             Action
                                         </th>
-
                                     </tr>
-
                                 </thead>
 
                                 <tbody>
-
                                     {users.map((item) => (
-
                                         <tr key={item.id}>
-
                                             <td style={styles.td}>
                                                 {item.name}
                                             </td>
@@ -904,7 +664,6 @@ const AdminDashboard = () => {
                                             </td>
 
                                             <td style={styles.td}>
-
                                                 <span
                                                     style={
                                                         styles.roleBadge
@@ -912,11 +671,9 @@ const AdminDashboard = () => {
                                                 >
                                                     {item.role}
                                                 </span>
-
                                             </td>
 
                                             <td style={styles.td}>
-
                                                 <button
                                                     onClick={() =>
                                                         handleViewUser(
@@ -929,29 +686,18 @@ const AdminDashboard = () => {
                                                 >
                                                     View
                                                 </button>
-
                                             </td>
-
                                         </tr>
-
                                     ))}
-
                                 </tbody>
-
                             </table>
-
                         </div>
-
                     )}
-
                 </section>
 
                 <section style={styles.sectionCard}>
-
                     <div style={styles.sectionHeader}>
-
                         <div>
-
                             <h2 style={styles.sectionTitle}>
                                 Stores
                             </h2>
@@ -959,7 +705,6 @@ const AdminDashboard = () => {
                             <p style={styles.sectionDescription}>
                                 Search and sort registered stores.
                             </p>
-
                         </div>
 
                         <button
@@ -968,25 +713,18 @@ const AdminDashboard = () => {
                         >
                             Add Store
                         </button>
-
                     </div>
-
-
-                    {/* STORE SEARCH */}
 
                     <form
                         onSubmit={handleStoreSearch}
                         style={styles.searchArea}
                     >
-
                         <input
                             type="text"
                             placeholder="Search by store name, email or address"
                             value={storeSearch}
                             onChange={(e) =>
-                                setStoreSearch(
-                                    e.target.value
-                                )
+                                setStoreSearch(e.target.value)
                             }
                             style={styles.searchInput}
                         />
@@ -997,57 +735,30 @@ const AdminDashboard = () => {
                         >
                             Search
                         </button>
-
                     </form>
 
-
-                    {/* STORE SORT */}
-
                     <div style={styles.sortArea}>
-
                         <span style={styles.sortLabel}>
                             Sort Stores:
                         </span>
 
                         <select
                             value={storeSortBy}
-                            onChange={
-                                handleStoreSortChange
-                            }
+                            onChange={handleStoreSortChange}
                             style={styles.select}
                         >
-
-                            <option value="id">
-                                ID
-                            </option>
-
-                            <option value="name">
-                                Name
-                            </option>
-
-                            <option value="email">
-                                Email
-                            </option>
-
-                            <option value="address">
-                                Address
-                            </option>
-
-                            <option value="rating">
-                                Rating
-                            </option>
-
+                            <option value="id">ID</option>
+                            <option value="name">Name</option>
+                            <option value="email">Email</option>
+                            <option value="address">Address</option>
+                            <option value="rating">Rating</option>
                         </select>
-
 
                         <select
                             value={storeOrder}
-                            onChange={
-                                handleStoreOrderChange
-                            }
+                            onChange={handleStoreOrderChange}
                             style={styles.select}
                         >
-
                             <option value="asc">
                                 Ascending
                             </option>
@@ -1055,30 +766,18 @@ const AdminDashboard = () => {
                             <option value="desc">
                                 Descending
                             </option>
-
                         </select>
-
                     </div>
 
-
-                    {/* STORE TABLE */}
-
                     {stores.length === 0 ? (
-
                         <div style={styles.emptyState}>
                             No stores found.
                         </div>
-
                     ) : (
-
                         <div style={styles.tableWrapper}>
-
                             <table style={styles.table}>
-
                                 <thead>
-
                                     <tr>
-
                                         <th style={styles.th}>
                                             Store Name
                                         </th>
@@ -1094,17 +793,12 @@ const AdminDashboard = () => {
                                         <th style={styles.th}>
                                             Rating
                                         </th>
-
                                     </tr>
-
                                 </thead>
 
                                 <tbody>
-
                                     {stores.map((store) => (
-
                                         <tr key={store.id}>
-
                                             <td style={styles.td}>
                                                 {store.name}
                                             </td>
@@ -1119,36 +813,25 @@ const AdminDashboard = () => {
 
                                             <td style={styles.td}>
                                                 ⭐{" "}
-                                                {store.rating ??
-                                                    "0.00"}
+                                                {store.rating ?? "0.00"}
                                             </td>
-
                                         </tr>
-
                                     ))}
-
                                 </tbody>
-
                             </table>
-
                         </div>
-
                     )}
-
                 </section>
-
             </main>
 
+            {/* =========================
+                ADD USER MODAL
+            ========================== */}
             {showUserModal && (
-
                 <div style={styles.modalOverlay}>
-
                     <div style={styles.modal}>
-
                         <div style={styles.modalHeader}>
-
                             <div>
-
                                 <h2 style={styles.modalTitle}>
                                     Add User
                                 </h2>
@@ -1156,7 +839,6 @@ const AdminDashboard = () => {
                                 <p style={styles.modalDescription}>
                                     Create a new user account.
                                 </p>
-
                             </div>
 
                             <button
@@ -1168,15 +850,12 @@ const AdminDashboard = () => {
                             >
                                 ×
                             </button>
-
                         </div>
-
 
                         <form
                             onSubmit={handleCreateUser}
                             style={styles.modalForm}
                         >
-
                             <label style={styles.label}>
                                 Name
                             </label>
@@ -1190,7 +869,6 @@ const AdminDashboard = () => {
                                 required
                                 style={styles.formInput}
                             />
-
 
                             <label style={styles.label}>
                                 Email
@@ -1206,7 +884,6 @@ const AdminDashboard = () => {
                                 style={styles.formInput}
                             />
 
-
                             <label style={styles.label}>
                                 Password
                             </label>
@@ -1220,7 +897,6 @@ const AdminDashboard = () => {
                                 required
                                 style={styles.formInput}
                             />
-
 
                             <label style={styles.label}>
                                 Address
@@ -1236,7 +912,6 @@ const AdminDashboard = () => {
                                 style={styles.textarea}
                             />
 
-
                             <label style={styles.label}>
                                 Role
                             </label>
@@ -1247,7 +922,6 @@ const AdminDashboard = () => {
                                 onChange={handleUserChange}
                                 style={styles.formInput}
                             >
-
                                 <option value="Normal User">
                                     Normal User
                                 </option>
@@ -1259,12 +933,9 @@ const AdminDashboard = () => {
                                 <option value="System Administrator">
                                     System Administrator
                                 </option>
-
                             </select>
 
-
                             <div style={styles.modalActions}>
-
                                 <button
                                     type="button"
                                     onClick={() =>
@@ -1285,36 +956,28 @@ const AdminDashboard = () => {
                                         ? "Creating..."
                                         : "Create User"}
                                 </button>
-
                             </div>
-
                         </form>
-
                     </div>
-
                 </div>
-
             )}
 
+            {/* =========================
+                ADD STORE MODAL
+            ========================== */}
             {showStoreModal && (
-
                 <div style={styles.modalOverlay}>
-
                     <div style={styles.modal}>
-
                         <div style={styles.modalHeader}>
-
                             <div>
-
                                 <h2 style={styles.modalTitle}>
                                     Add Store
                                 </h2>
 
                                 <p style={styles.modalDescription}>
-                                    Create a new store and assign
-                                    it to a Store Owner.
+                                    Create a new store and assign it
+                                    to a Store Owner.
                                 </p>
-
                             </div>
 
                             <button
@@ -1326,15 +989,12 @@ const AdminDashboard = () => {
                             >
                                 ×
                             </button>
-
                         </div>
-
 
                         <form
                             onSubmit={handleCreateStore}
                             style={styles.modalForm}
                         >
-
                             <label style={styles.label}>
                                 Store Owner ID
                             </label>
@@ -1348,7 +1008,6 @@ const AdminDashboard = () => {
                                 required
                                 style={styles.formInput}
                             />
-
 
                             <label style={styles.label}>
                                 Store Name
@@ -1364,7 +1023,6 @@ const AdminDashboard = () => {
                                 style={styles.formInput}
                             />
 
-
                             <label style={styles.label}>
                                 Store Email
                             </label>
@@ -1378,7 +1036,6 @@ const AdminDashboard = () => {
                                 required
                                 style={styles.formInput}
                             />
-
 
                             <label style={styles.label}>
                                 Address
@@ -1394,9 +1051,7 @@ const AdminDashboard = () => {
                                 style={styles.textarea}
                             />
 
-
                             <div style={styles.modalActions}>
-
                                 <button
                                     type="button"
                                     onClick={() =>
@@ -1417,35 +1072,27 @@ const AdminDashboard = () => {
                                         ? "Creating..."
                                         : "Create Store"}
                                 </button>
-
                             </div>
-
                         </form>
-
                     </div>
-
                 </div>
-
             )}
 
+            {/* =========================
+                USER DETAILS MODAL
+            ========================== */}
             {showUserDetails && selectedUser && (
-
                 <div style={styles.modalOverlay}>
-
                     <div style={styles.modal}>
-
                         <div style={styles.modalHeader}>
-
                             <div>
-
                                 <h2 style={styles.modalTitle}>
                                     User Details
                                 </h2>
 
                                 <p style={styles.modalDescription}>
-                                    User information
+                                    Complete user information
                                 </p>
-
                             </div>
 
                             <button
@@ -1456,50 +1103,71 @@ const AdminDashboard = () => {
                             >
                                 ×
                             </button>
-
                         </div>
-
 
                         <div style={styles.detailsContent}>
 
+                            {/* ID */}
                             <div style={styles.detailRow}>
-                                <strong>Name</strong>
+                                <strong>
+                                    {getUserIdLabel(
+                                        selectedUser.role
+                                    )}
+                                </strong>
+
+                                <span style={styles.idValue}>
+                                    {selectedUser.id}
+                                </span>
+                            </div>
+
+                            {/* Name */}
+                            <div style={styles.detailRow}>
+                                <strong>
+                                    Name
+                                </strong>
+
                                 <span>
                                     {selectedUser.name}
                                 </span>
                             </div>
 
+                            {/* Email */}
                             <div style={styles.detailRow}>
-                                <strong>Email</strong>
+                                <strong>
+                                    Email
+                                </strong>
+
                                 <span>
                                     {selectedUser.email}
                                 </span>
                             </div>
 
+                            {/* Address */}
                             <div style={styles.detailRow}>
-                                <strong>Address</strong>
+                                <strong>
+                                    Address
+                                </strong>
+
                                 <span>
                                     {selectedUser.address}
                                 </span>
                             </div>
 
+                            {/* Role */}
                             <div style={styles.detailRow}>
-                                <strong>Role</strong>
+                                <strong>
+                                    Role
+                                </strong>
+
                                 <span>
                                     {selectedUser.role}
                                 </span>
                             </div>
 
-
+                            {/* Store Owner Information */}
                             {selectedUser.store && (
-
                                 <div style={styles.storeDetails}>
-
-                                    <h3
-                                        style={
-                                            styles.storeDetailsTitle
-                                        }
-                                    >
+                                    <h3 style={styles.storeDetailsTitle}>
                                         Store Information
                                     </h3>
 
@@ -1508,8 +1176,7 @@ const AdminDashboard = () => {
                                             Store Name:
                                         </strong>{" "}
                                         {
-                                            selectedUser
-                                                .store
+                                            selectedUser.store
                                                 .storeName
                                         }
                                     </p>
@@ -1519,8 +1186,7 @@ const AdminDashboard = () => {
                                             Store ID:
                                         </strong>{" "}
                                         {
-                                            selectedUser
-                                                .store
+                                            selectedUser.store
                                                 .storeId
                                         }
                                     </p>
@@ -1531,22 +1197,15 @@ const AdminDashboard = () => {
                                         </strong>{" "}
                                         ⭐{" "}
                                         {
-                                            selectedUser
-                                                .store
-                                                .rating ??
-                                            "0.00"
+                                            selectedUser.store
+                                                .rating ?? "0.00"
                                         }
                                     </p>
-
                                 </div>
-
                             )}
-
                         </div>
 
-
                         <div style={styles.modalActions}>
-
                             <button
                                 type="button"
                                 onClick={() =>
@@ -1556,22 +1215,15 @@ const AdminDashboard = () => {
                             >
                                 Close
                             </button>
-
                         </div>
-
                     </div>
-
                 </div>
-
             )}
-
         </div>
     );
 };
 
-
 const styles = {
-
     page: {
         minHeight: "100vh",
         background: "#f5f6f8",
@@ -1583,15 +1235,15 @@ const styles = {
         width: "100%",
         maxWidth: "1200px",
         margin: "0 auto",
-        padding: "0 25px 40px 25px",
+        padding: "0 0 40px 0",
         boxSizing: "border-box",
     },
 
     header: {
         width: "100%",
-        background: "#ffffff",
-        borderBottom: "1px solid #e2e5e8",
-        padding: "22px 30px",
+        maxWidth: "1200px",
+        margin: "0 auto",
+        padding: "20px 0 18px 0",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
@@ -1601,14 +1253,17 @@ const styles = {
     title: {
         margin: 0,
         color: "#1f2937",
-        fontSize: "26px",
+        fontSize: "28px",
+        lineHeight: "1.2",
         fontWeight: "700",
+        letterSpacing: "-0.4px",
     },
 
     welcome: {
-        margin: "6px 0 0 0",
+        margin: "4px 0 0 0",
         color: "#6b7280",
-        fontSize: "14px",
+        fontSize: "15px",
+        lineHeight: "1.4",
     },
 
     logoutButton: {
@@ -1641,8 +1296,7 @@ const styles = {
 
     statsContainer: {
         display: "grid",
-        gridTemplateColumns:
-            "repeat(3, minmax(0, 1fr))",
+        gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
         gap: "18px",
         marginBottom: "22px",
     },
@@ -1895,8 +1549,7 @@ const styles = {
         overflowY: "auto",
         background: "#ffffff",
         borderRadius: "8px",
-        boxShadow:
-            "0 8px 25px rgba(0,0,0,0.18)",
+        boxShadow: "0 8px 25px rgba(0,0,0,0.18)",
     },
 
     modalHeader: {
@@ -2003,6 +1656,12 @@ const styles = {
         color: "#374151",
         fontSize: "14px",
         wordBreak: "break-word",
+    },
+
+    idValue: {
+        color: "#1f2937",
+        fontSize: "15px",
+        fontWeight: "600",
     },
 
     storeDetails: {
