@@ -27,10 +27,6 @@ textarea {
 }
 
 
-/* =========================================
-   AUTH PAGE
-========================================= */
-
 .auth-page {
     min-height: 100vh;
 
@@ -48,7 +44,7 @@ textarea {
     width: 50%;
     min-height: 100vh;
 
-    background: #243447;
+    background: #000000;
 
     display: flex;
     align-items: center;
@@ -188,7 +184,7 @@ textarea {
 
 .form-group input:focus,
 .form-group textarea:focus {
-    border-color: #243447;
+    border-color: #000000;
 }
 
 .form-group input::placeholder,
@@ -223,7 +219,7 @@ textarea {
     border: none;
     border-radius: 6px;
 
-    background: #243447;
+    background: #000000;
     color: #ffffff;
 
     font-size: 15px;
@@ -306,7 +302,7 @@ textarea {
 }
 
 .auth-footer a {
-    color: #243447;
+    color: #000000;
 
     font-weight: 600;
 
