@@ -1167,14 +1167,123 @@ const AdminDashboard = () => {
                 </div>
             )}
 
-            {/* USER DETAILS MODAL */}
+            {showStoreModal && (
+                <div style={styles.modalOverlay}>
+                    <div style={styles.modal}>
+                        <div style={styles.modalHeader}>
+                            <div>
+                                <h2 style={styles.modalTitle}>
+                                    Add Store
+                                </h2>
+
+                                <p style={styles.modalDescription}>
+                                    Create a new store and assign it
+                                    to a Store Owner.
+                                </p>
+                            </div>
+
+                            <button
+                                onClick={() =>
+                                    setShowStoreModal(false)
+                                }
+                                disabled={submitting}
+                                style={styles.closeButton}
+                            >
+                                ×
+                            </button>
+                        </div>
+
+                        <form
+                            onSubmit={handleCreateStore}
+                            style={styles.modalForm}
+                        >
+                            <label style={styles.label}>
+                                Store Owner ID
+                            </label>
+
+                            <input
+                                type="number"
+                                name="ownerId"
+                                value={storeForm.ownerId}
+                                onChange={handleStoreChange}
+                                placeholder="Enter Store Owner ID"
+                                required
+                                style={styles.formInput}
+                            />
+
+                            <label style={styles.label}>
+                                Store Name
+                            </label>
+
+                            <input
+                                type="text"
+                                name="name"
+                                value={storeForm.name}
+                                onChange={handleStoreChange}
+                                placeholder="Enter store name"
+                                required
+                                style={styles.formInput}
+                            />
+
+                            <label style={styles.label}>
+                                Store Email
+                            </label>
+
+                            <input
+                                type="email"
+                                name="email"
+                                value={storeForm.email}
+                                onChange={handleStoreChange}
+                                placeholder="Enter store email"
+                                required
+                                style={styles.formInput}
+                            />
+
+                            <label style={styles.label}>
+                                Address
+                            </label>
+
+                            <textarea
+                                name="address"
+                                value={storeForm.address}
+                                onChange={handleStoreChange}
+                                placeholder="Enter store address"
+                                required
+                                rows="3"
+                                style={styles.textarea}
+                            />
+
+                            <div style={styles.modalActions}>
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setShowStoreModal(false)
+                                    }
+                                    disabled={submitting}
+                                    style={styles.cancelButton}
+                                >
+                                    Cancel
+                                </button>
+
+                                <button
+                                    type="submit"
+                                    disabled={submitting}
+                                    style={styles.primaryButton}
+                                >
+                                    {submitting
+                                        ? "Creating..."
+                                        : "Create Store"}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
             {showUserDetails && selectedUser && (
                 <div style={styles.modalOverlay}>
-
                     <div style={styles.modal}>
-
                         <div style={styles.modalHeader}>
-
                             <div>
                                 <h2 style={styles.modalTitle}>
                                     User Details
@@ -1193,13 +1302,22 @@ const AdminDashboard = () => {
                             >
                                 ×
                             </button>
-
                         </div>
 
                         <div style={styles.detailsContent}>
 
+                            {/* USER ID ADDED HERE */}
+                            <div style={styles.detailRow}>
+                                <strong>User ID</strong>
+
+                                <span>
+                                    {selectedUser.id}
+                                </span>
+                            </div>
+
                             <div style={styles.detailRow}>
                                 <strong>Name</strong>
+
                                 <span>
                                     {selectedUser.name}
                                 </span>
@@ -1207,6 +1325,7 @@ const AdminDashboard = () => {
 
                             <div style={styles.detailRow}>
                                 <strong>Email</strong>
+
                                 <span>
                                     {selectedUser.email}
                                 </span>
@@ -1214,6 +1333,7 @@ const AdminDashboard = () => {
 
                             <div style={styles.detailRow}>
                                 <strong>Address</strong>
+
                                 <span>
                                     {selectedUser.address}
                                 </span>
@@ -1221,6 +1341,7 @@ const AdminDashboard = () => {
 
                             <div style={styles.detailRow}>
                                 <strong>Role</strong>
+
                                 <span>
                                     {selectedUser.role}
                                 </span>
@@ -1228,12 +1349,7 @@ const AdminDashboard = () => {
 
                             {selectedUser.store && (
                                 <div style={styles.storeDetails}>
-
-                                    <h3
-                                        style={
-                                            styles.storeDetailsTitle
-                                        }
-                                    >
+                                    <h3 style={styles.storeDetailsTitle}>
                                         Store Information
                                     </h3>
 
@@ -1242,8 +1358,7 @@ const AdminDashboard = () => {
                                             Store Name:
                                         </strong>{" "}
                                         {
-                                            selectedUser
-                                                .store
+                                            selectedUser.store
                                                 .storeName
                                         }
                                     </p>
@@ -1253,8 +1368,7 @@ const AdminDashboard = () => {
                                             Store ID:
                                         </strong>{" "}
                                         {
-                                            selectedUser
-                                                .store
+                                            selectedUser.store
                                                 .storeId
                                         }
                                     </p>
@@ -1265,20 +1379,15 @@ const AdminDashboard = () => {
                                         </strong>{" "}
                                         ⭐{" "}
                                         {
-                                            selectedUser
-                                                .store
-                                                .rating ??
-                                            "0.00"
+                                            selectedUser.store
+                                                .rating ?? "0.00"
                                         }
                                     </p>
-
                                 </div>
                             )}
-
                         </div>
 
                         <div style={styles.modalActions}>
-
                             <button
                                 type="button"
                                 onClick={() =>
@@ -1288,18 +1397,13 @@ const AdminDashboard = () => {
                             >
                                 Close
                             </button>
-
                         </div>
-
                     </div>
-
                 </div>
             )}
-
         </div>
     );
 };
-
 const styles = {
 
     page: {
