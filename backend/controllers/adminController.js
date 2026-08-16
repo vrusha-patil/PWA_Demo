@@ -5,7 +5,7 @@ const getDashboardStats = (req, res) => {
     const queries = {
         users: "SELECT COUNT(*) AS totalUsers FROM users",
         stores: "SELECT COUNT(*) AS totalStores FROM stores",
-        ratings: "SELECT COUNT(*) AS totalRatings FROM ratings"
+        ratings: "SELECT COUNT(DISTINCT user_id) AS totalRatings FROM ratings;"
     };
 
     db.query(queries.users, (err, userResult) => {
