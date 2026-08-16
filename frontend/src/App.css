@@ -1,21 +1,74 @@
+
+/* =========================================
+   STORE RATING SYSTEM
+   MAIN COLOR THEME
+   ========================================= */
+
+:root {
+  --primary-blue: #000000;
+  --primary-blue-dark: #0b4c55;
+
+  --accent-pink: #000000;
+  --accent-pink-dark: #e85d5c;
+
+  --white: #ffffff;
+  --background: #ffffff;
+  --light-background: #f8f9f9;
+
+  --text-dark: #16343a;
+  --text: #26383c;
+  --text-muted: #6b777a;
+
+  --border: #dfe5e6;
+  --border-light: #edf0f1;
+
+  --shadow: 0 4px 18px rgba(16, 96, 106, 0.08);
+  --shadow-hover: 0 6px 22px rgba(16, 96, 106, 0.14);
+
+  /* Compatibility with existing styles */
+  --accent: #000000;
+  --accent-bg: #fff2f2;
+  --accent-border: #000000;
+
+  --text-h: #000000;
+  --social-bg: #f8f9f9;
+}
+
+
+/* =========================================
+   COUNTER
+   ========================================= */
+
 .counter {
   font-size: 16px;
   padding: 5px 10px;
   border-radius: 5px;
-  color: var(--accent);
-  background: var(--accent-bg);
+
+  color: var(--accent-pink);
+  background: #fff2f2;
+
   border: 2px solid transparent;
-  transition: border-color 0.3s;
+  transition:
+    border-color 0.3s ease,
+    background 0.3s ease;
+
   margin-bottom: 24px;
 
   &:hover {
-    border-color: var(--accent-border);
+    border-color: var(--accent-pink);
+    background: #fff0f0;
   }
+
   &:focus-visible {
-    outline: 2px solid var(--accent);
+    outline: 2px solid var(--accent-pink);
     outline-offset: 2px;
   }
 }
+
+
+/* =========================================
+   HERO
+   ========================================= */
 
 .hero {
   position: relative;
@@ -42,7 +95,12 @@
     z-index: 1;
     top: 34px;
     height: 28px;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
+
+    transform:
+      perspective(2000px)
+      rotateZ(300deg)
+      rotateX(44deg)
+      rotateY(39deg)
       scale(1.4);
   }
 
@@ -51,18 +109,33 @@
     top: 107px;
     height: 26px;
     width: auto;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
+
+    transform:
+      perspective(2000px)
+      rotateZ(300deg)
+      rotateX(40deg)
+      rotateY(39deg)
       scale(0.8);
   }
 }
 
+
+/* =========================================
+   CENTER
+   ========================================= */
+
 #center {
   display: flex;
   flex-direction: column;
+
   gap: 25px;
+
   place-content: center;
   place-items: center;
+
   flex-grow: 1;
+
+  background: var(--white);
 
   @media (max-width: 1024px) {
     padding: 32px 20px 24px;
@@ -70,14 +143,24 @@
   }
 }
 
+
+/* =========================================
+   NEXT STEPS
+   ========================================= */
+
 #next-steps {
   display: flex;
+
   border-top: 1px solid var(--border);
+
   text-align: left;
+
+  background: var(--white);
 
   & > div {
     flex: 1 1 0;
     padding: 32px;
+
     @media (max-width: 1024px) {
       padding: 24px 20px;
     }
@@ -95,6 +178,11 @@
   }
 }
 
+
+/* =========================================
+   DOCUMENTATION
+   ========================================= */
+
 #docs {
   border-right: 1px solid var(--border);
 
@@ -104,11 +192,19 @@
   }
 }
 
+
+/* =========================================
+   NEXT STEPS LINKS
+   ========================================= */
+
 #next-steps ul {
   list-style: none;
+
   padding: 0;
+
   display: flex;
   gap: 8px;
+
   margin: 32px 0 0;
 
   .logo {
@@ -116,20 +212,42 @@
   }
 
   a {
-    color: var(--text-h);
+    color: var(--primary-blue);
+
     font-size: 16px;
+
     border-radius: 6px;
-    background: var(--social-bg);
+
+    background: var(--light-background);
+
     display: flex;
+
     padding: 6px 12px;
+
     align-items: center;
+
     gap: 8px;
+
     text-decoration: none;
-    transition: box-shadow 0.3s;
+
+    border: 1px solid transparent;
+
+    transition:
+      box-shadow 0.3s ease,
+      border-color 0.3s ease,
+      color 0.3s ease,
+      background 0.3s ease;
 
     &:hover {
+      color: var(--accent-pink);
+
+      border-color: var(--accent-pink);
+
+      background: #fff8f8;
+
       box-shadow: var(--shadow);
     }
+
     .button-icon {
       height: 18px;
       width: 18px;
@@ -138,7 +256,9 @@
 
   @media (max-width: 1024px) {
     margin-top: 20px;
+
     flex-wrap: wrap;
+
     justify-content: center;
 
     li {
@@ -147,38 +267,211 @@
 
     a {
       width: 100%;
+
       justify-content: center;
+
       box-sizing: border-box;
     }
   }
 }
 
+
+/* =========================================
+   SPACER
+   ========================================= */
+
 #spacer {
   height: 88px;
+
   border-top: 1px solid var(--border);
+
+  background: var(--white);
+
   @media (max-width: 1024px) {
     height: 48px;
   }
 }
 
+
+/* =========================================
+   TICKS / DECORATIVE BORDERS
+   ========================================= */
+
 .ticks {
   position: relative;
+
   width: 100%;
 
   &::before,
   &::after {
     content: '';
+
     position: absolute;
+
     top: -4.5px;
+
     border: 5px solid transparent;
   }
 
   &::before {
     left: 0;
-    border-left-color: var(--border);
+
+    border-left-color: var(--accent-pink);
   }
+
   &::after {
     right: 0;
-    border-right-color: var(--border);
+
+    border-right-color: var(--accent-pink);
   }
 }
+
+
+/* =========================================
+   GENERAL BUTTON THEME
+   ========================================= */
+
+button {
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+/* Pink primary buttons */
+button.primary,
+.btn-primary,
+.primary-button {
+  background: var(--accent-pink);
+  color: var(--white);
+  border: 1px solid var(--accent-pink);
+}
+
+button.primary:hover,
+.btn-primary:hover,
+.primary-button:hover {
+  background: var(--accent-pink-dark);
+  border-color: var(--accent-pink-dark);
+
+  box-shadow: 0 5px 14px rgba(247, 109, 108, 0.25);
+}
+
+
+/* Blue secondary buttons */
+button.secondary,
+.btn-secondary,
+.secondary-button {
+  background: var(--primary-blue);
+  color: var(--white);
+  border: 1px solid var(--primary-blue);
+}
+
+button.secondary:hover,
+.btn-secondary:hover,
+.secondary-button:hover {
+  background: var(--primary-blue-dark);
+  border-color: var(--primary-blue-dark);
+}
+
+
+/* =========================================
+   GENERAL HEADINGS
+   ========================================= */
+
+h1,
+h2,
+h3,
+h4 {
+  color: var(--primary-blue);
+}
+
+
+/* =========================================
+   LINKS
+   ========================================= */
+
+a {
+  color: var(--primary-blue);
+}
+
+a:hover {
+  color: var(--accent-pink);
+}
+
+
+/* =========================================
+   INPUTS
+   ========================================= */
+
+input,
+textarea,
+select {
+  border-color: var(--border);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--accent-pink);
+
+  outline: none;
+
+  box-shadow: 0 0 0 3px rgba(247, 109, 108, 0.12);
+}
+
+
+/* =========================================
+   MOBILE RESPONSIVE
+   ========================================= */
+
+@media (max-width: 768px) {
+  #center {
+    padding: 24px 16px;
+    gap: 16px;
+  }
+
+  #next-steps > div {
+    padding: 22px 16px;
+  }
+
+  #next-steps ul {
+    gap: 8px;
+  }
+
+  #next-steps ul li {
+    flex: 1 1 100%;
+  }
+
+  #next-steps ul a {
+    width: 100%;
+  }
+}
+
+
+@media (max-width: 480px) {
+  #center {
+    padding: 20px 12px;
+  }
+
+  #next-steps > div {
+    padding: 20px 14px;
+  }
+
+  .counter {
+    font-size: 14px;
+    padding: 5px 8px;
+  }
+}
+
+
+/* =========================================
+   TEXT SELECTION
+   ========================================= */
+
+::selection {
+  background: var(--accent-pink);
+  color: var(--white);
+}
+
