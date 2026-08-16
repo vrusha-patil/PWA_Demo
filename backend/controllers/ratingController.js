@@ -1,10 +1,5 @@
 const db = require("../config/database");
 
-
-// ===============================
-// CREATE RATING
-// ===============================
-
 const createRating = (req, res) => {
 
     const { storeId, rating } = req.body || {};
@@ -151,10 +146,6 @@ const createRating = (req, res) => {
 };
 
 
-// ===============================
-// UPDATE RATING
-// ===============================
-
 const updateRating = (req, res) => {
 
     const { storeId } = req.params;
@@ -170,7 +161,6 @@ const updateRating = (req, res) => {
         });
     }
 
-    // Rating validation
     if (
         !Number.isInteger(Number(rating)) ||
         Number(rating) < 1 ||

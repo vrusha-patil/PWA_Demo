@@ -73,9 +73,6 @@ const getAllStores = (req, res) => {
 };
 
 
-// ==========================================
-// GET ALL STORES FOR NORMAL USER
-// ==========================================
 
 const getAllStoresForUser = (req, res) => {
 
@@ -174,11 +171,6 @@ const getAllStoresForUser = (req, res) => {
         }
     );
 };
-
-
-// ==========================================
-// EXPORT
-// ==========================================
 
 module.exports = {
     getAllStores,

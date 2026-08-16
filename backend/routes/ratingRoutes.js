@@ -10,22 +10,12 @@ const {
     updateRating
 } = require("../controllers/ratingController");
 
-
-// ===============================
-// SUBMIT RATING
-// ===============================
-
 router.post(
     "/",
     authenticateToken,
     authorizeRoles("Normal User"),
     createRating
 );
-
-
-// ===============================
-// MODIFY RATING
-// ===============================
 
 router.put(
     "/:storeId",

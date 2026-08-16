@@ -1,10 +1,6 @@
 const db = require("../config/database");
 const bcrypt = require("bcryptjs");
 
-// =====================================================
-// ADMIN DASHBOARD STATS
-// =====================================================
-
 const getDashboardStats = (req, res) => {
     const queries = {
         users: "SELECT COUNT(*) AS totalUsers FROM users",
@@ -57,11 +53,6 @@ const getDashboardStats = (req, res) => {
         });
     });
 };
-
-
-// =====================================================
-// CREATE USER BY ADMIN
-// =====================================================
 
 const createUserByAdmin = (req, res) => {
 
@@ -208,10 +199,6 @@ const createUserByAdmin = (req, res) => {
     );
 };
 
-
-// =====================================================
-// CREATE STORE
-// =====================================================
 
 const createStore = (req, res) => {
 
@@ -375,14 +362,6 @@ const createStore = (req, res) => {
     );
 };
 
-
-// =====================================================
-// GET ALL STORES
-// SEARCH: NAME OR EMAIL OR ADDRESS
-// SORT: ID / NAME / EMAIL / ADDRESS / RATING
-// ORDER: ASC / DESC
-// =====================================================
-
 const getAllStores = (req, res) => {
 
     const {
@@ -405,9 +384,6 @@ const getAllStores = (req, res) => {
     const conditions = [];
     const values = [];
 
-    // -----------------------------------------
-    // SEARCH
-    // -----------------------------------------
 
     if (search && search.trim() !== "") {
 
@@ -427,19 +403,12 @@ const getAllStores = (req, res) => {
         values.push(searchValue);
     }
 
-    // -----------------------------------------
-    // WHERE
-    // -----------------------------------------
 
     if (conditions.length > 0) {
         sql +=
             " WHERE " +
             conditions.join(" AND ");
     }
-
-    // -----------------------------------------
-    // SORTING
-    // -----------------------------------------
 
     const allowedSortFields = [
         "id",
@@ -491,13 +460,6 @@ const getAllStores = (req, res) => {
 };
 
 
-// =====================================================
-// GET ALL USERS
-// SEARCH: NAME OR EMAIL OR ADDRESS
-// FILTER: ROLE
-// SORT: ID / NAME / EMAIL / ADDRESS / ROLE
-// ORDER: ASC / DESC
-// =====================================================
 
 const getAllUsers = (req, res) => {
 
@@ -521,10 +483,6 @@ const getAllUsers = (req, res) => {
     const conditions = [];
     const values = [];
 
-    // -----------------------------------------
-    // SEARCH
-    // -----------------------------------------
-
     if (search && search.trim() !== "") {
 
         conditions.push(`
@@ -543,9 +501,6 @@ const getAllUsers = (req, res) => {
         values.push(searchValue);
     }
 
-    // -----------------------------------------
-    // ROLE FILTER
-    // -----------------------------------------
 
     if (role && role.trim() !== "") {
 
@@ -565,19 +520,12 @@ const getAllUsers = (req, res) => {
         values.push(role);
     }
 
-    // -----------------------------------------
-    // WHERE
-    // -----------------------------------------
 
     if (conditions.length > 0) {
         sql +=
             " WHERE " +
             conditions.join(" AND ");
     }
-
-    // -----------------------------------------
-    // SORTING
-    // -----------------------------------------
 
     const allowedSortFields = [
         "id",
@@ -628,10 +576,6 @@ const getAllUsers = (req, res) => {
     );
 };
 
-
-// =====================================================
-// GET USER BY ID
-// =====================================================
 
 const getUserById = (req, res) => {
 
@@ -706,9 +650,6 @@ const getUserById = (req, res) => {
 };
 
 
-// =====================================================
-// EXPORT
-// =====================================================
 
 module.exports = {
     getDashboardStats,

@@ -15,10 +15,6 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
 
-    // ==========================================
-    // RESTORE LOGIN AFTER PAGE REFRESH
-    // ==========================================
-
     useEffect(() => {
 
         try {
@@ -65,10 +61,6 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
 
-    // ==========================================
-    // LOGIN
-    // ==========================================
-
     const login = async (email, password) => {
 
         const response = await api.post(
@@ -101,11 +93,6 @@ export const AuthProvider = ({ children }) => {
         return response.data;
     };
 
-
-    // ==========================================
-    // LOGOUT
-    // ==========================================
-
     const logout = () => {
 
         // Remove authentication information
@@ -134,11 +121,6 @@ export const AuthProvider = ({ children }) => {
         </AuthContext.Provider>
     );
 };
-
-
-// ==========================================
-// CUSTOM HOOK
-// ==========================================
 
 export const useAuth = () => {
     return useContext(AuthContext);
