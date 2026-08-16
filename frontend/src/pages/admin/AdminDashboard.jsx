@@ -1302,10 +1302,6 @@ const AdminDashboard = () => {
 
 const styles = {
 
-    /* =====================================================
-       MAIN PAGE
-    ===================================================== */
-
     page: {
         minHeight: "100vh",
         background: "#f5f6f8",
@@ -1313,10 +1309,6 @@ const styles = {
         boxSizing: "border-box",
     },
 
-    /*
-     * Main dashboard content is now centered.
-     * This matches the second screenshot.
-     */
     container: {
         width: "100%",
         maxWidth: "1300px",
@@ -1325,10 +1317,6 @@ const styles = {
         boxSizing: "border-box",
     },
 
-    /* =====================================================
-       HEADER
-    ===================================================== */
-
     header: {
         width: "100%",
         background: "#ffffff",
@@ -1336,10 +1324,6 @@ const styles = {
         boxSizing: "border-box",
     },
 
-    /*
-     * Header content uses the same 1300px centered width
-     * as the dashboard.
-     */
     headerInner: {
         width: "100%",
         maxWidth: "1300px",
@@ -1375,10 +1359,6 @@ const styles = {
         cursor: "pointer",
     },
 
-    /* =====================================================
-       INTRO
-    ===================================================== */
-
     introSection: {
         padding: "28px 0 20px 0",
     },
@@ -1395,10 +1375,6 @@ const styles = {
         color: "#6b7280",
         fontSize: "14px",
     },
-
-    /* =====================================================
-       STATISTICS
-    ===================================================== */
 
     statsContainer: {
         display: "grid",
@@ -1429,10 +1405,6 @@ const styles = {
         fontWeight: "700",
     },
 
-    /* =====================================================
-       SECTION CARDS
-    ===================================================== */
-
     sectionCard: {
         background: "#ffffff",
         border: "1px solid #e1e5e9",
@@ -1462,10 +1434,6 @@ const styles = {
         color: "#6b7280",
         fontSize: "13px",
     },
-
-    /* =====================================================
-       SEARCH
-    ===================================================== */
 
     searchArea: {
         display: "flex",
@@ -1499,10 +1467,6 @@ const styles = {
         boxSizing: "border-box",
     },
 
-    /* =====================================================
-       SORT
-    ===================================================== */
-
     sortArea: {
         display: "flex",
         alignItems: "center",
@@ -1516,10 +1480,6 @@ const styles = {
         fontSize: "14px",
         fontWeight: "600",
     },
-
-    /* =====================================================
-       BUTTONS
-    ===================================================== */
 
     primaryButton: {
         padding: "10px 16px",
@@ -1556,10 +1516,6 @@ const styles = {
         cursor: "pointer",
     },
 
-    /* =====================================================
-       ROLE BADGE
-    ===================================================== */
-
     roleBadge: {
         display: "inline-block",
         padding: "5px 8px",
@@ -1569,10 +1525,6 @@ const styles = {
         fontSize: "12px",
         fontWeight: "600",
     },
-
-    /* =====================================================
-       TABLE
-    ===================================================== */
 
     tableWrapper: {
         width: "100%",
@@ -1613,10 +1565,6 @@ const styles = {
         borderRadius: "6px",
     },
 
-    /* =====================================================
-       MESSAGES
-    ===================================================== */
-
     errorMessage: {
         marginBottom: "18px",
         padding: "11px 14px",
@@ -1636,10 +1584,6 @@ const styles = {
         color: "#166534",
         fontSize: "14px",
     },
-
-    /* =====================================================
-       LOADING
-    ===================================================== */
 
     centerPage: {
         minHeight: "100vh",
@@ -1668,10 +1612,6 @@ const styles = {
         color: "#6b7280",
         fontSize: "14px",
     },
-
-    /* =====================================================
-       MODAL
-    ===================================================== */
 
     modalOverlay: {
         position: "fixed",
@@ -1786,10 +1726,6 @@ const styles = {
         fontWeight: "600",
         cursor: "pointer",
     },
-
-    /* =====================================================
-       USER DETAILS
-    ===================================================== */
 
     detailsContent: {
         padding: "22px",
