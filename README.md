@@ -22,7 +22,7 @@ Users can register, login, view stores, submit ratings, update ratings, and chan
 ## Features
 
 ### Authentication
-- User registration and login
+- User registration and login with proper input validation
 - JWT authentication
 - Role-based access control
 - Protected routes
@@ -80,29 +80,29 @@ Users can register, login, view stores, submit ratings, update ratings, and chan
 - Deployment : MySQL hosted on Aiven (cloud)
 
 ### API Testing
-- Postman
+- Postman - Testing api  like (POST,GET,PUT)
 
 ## Demo Credentials
 
 These accounts are provided for testing/demo purposes.
 
-### Admin
+### System Administrator
 
 - Email: admin1@gmail.com
 - Password: Admin@321
-- Role: ADMIN
+- Role: System Administrator 
 
 ### Store Owner
 
 - Email: kusum2312@gmail.com
 - Password: Kusum@2312
-- Role: OWNER
+- Role: Store Owner
 
 ### Normal User
 
 - Email: jay123@gmail.com
 - Password: Jayraj@123
-- Role: NORMAL USER
+- Role: Normal User
 
 You can also create a new account using the Register option.
 
@@ -131,6 +131,8 @@ Store-Rating-System/
 │   │   ├── App.jsx
 │   │   └── main.jsx
 │   └── package.json
-│
+|
+│____ Database.sql
+|
 └── README.md
 
