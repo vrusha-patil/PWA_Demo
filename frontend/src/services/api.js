@@ -7,7 +7,7 @@ const isLocalhost =
 const api = axios.create({
     baseURL: isLocalhost
         ? "http://localhost:5000/api"
-        : "https://pwa-demo-frontend.onrender.com/api",
+        : "https://pwa-demo-backend.onrender.com/api",
         
 
     headers: {

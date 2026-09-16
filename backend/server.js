@@ -7,7 +7,7 @@ const app = express();
 app.use(cors({
     origin: [
         "http://localhost:5173",
-        "https://pwa-demo-backend.onrender.com"
+        "https://demo-render-mysql-hosting-frontend.onrender.com"
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"]
