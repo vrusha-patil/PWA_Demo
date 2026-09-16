@@ -7,7 +7,8 @@ const isLocalhost =
 const api = axios.create({
     baseURL: isLocalhost
         ? "http://localhost:5000/api"
-        : "https://demo-F2F2F2-mysql-hosting-backend.onrender.com/api",
+        : "https://demo-render-mysql-hosting-backend.onrender.com/api",
+        
 
     headers: {
         "Content-Type": "application/json",
