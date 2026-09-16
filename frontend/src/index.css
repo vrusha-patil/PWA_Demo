@@ -212,6 +212,17 @@ textarea {
     cursor: not-allowed;
 }
 
+.install-app-button {
+    width: 100%;
+    margin-top: 12px;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+}
+
 .auth-error {
     margin-bottom: 20px;
 

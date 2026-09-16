@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import PasswordInput from "../../components/PasswordInput";
@@ -16,12 +17,64 @@ const Login = () => {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
+    // PWA install prompt
+    const [installPrompt, setInstallPrompt] = useState(null);
+
+    useEffect(() => {
+
+        const handleBeforeInstallPrompt = (event) => {
+
+            // Prevent the browser from showing its own mini-infobar
+            event.preventDefault();
+
+            // Save the event so we can trigger it from our button
+            setInstallPrompt(event);
+        };
+
+        window.addEventListener(
+            "beforeinstallprompt",
+            handleBeforeInstallPrompt
+        );
+
+        return () => {
+            window.removeEventListener(
+                "beforeinstallprompt",
+                handleBeforeInstallPrompt
+            );
+        };
+
+    }, []);
+
+    const handleInstallApp = async () => {
+
+        if (!installPrompt) {
+            return;
+        }
+
+        // Show browser's native PWA installation dialog
+        installPrompt.prompt();
+
+        // Wait for user's choice
+        const { outcome } = await installPrompt.userChoice;
+
+        console.log(
+            outcome === "accepted"
+                ? "PWA installation accepted"
+                : "PWA installation dismissed"
+        );
+
+        // Prompt can only be used once
+        setInstallPrompt(null);
+    };
+
+
     const handleChange = (e) => {
         setFormData({
             ...formData,
             [e.target.name]: e.target.value,
         });
     };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -72,6 +125,7 @@ const Login = () => {
             setLoading(false);
         }
     };
+
 
     return (
         <div className="auth-page">
@@ -170,6 +224,18 @@ const Login = () => {
                                 : "Sign In"}
                         </button>
 
+
+                        {/* PWA Install Button */}
+                        {installPrompt && (
+                            <button
+                                type="button"
+                                className="install-app-button"
+                                onClick={handleInstallApp}
+                            >
+                                📱 Install Store Rating App
+                            </button>
+                        )}
+
                     </form>
 
 
@@ -194,3 +260,4 @@ const Login = () => {
 };
 
 export default Login;
+
